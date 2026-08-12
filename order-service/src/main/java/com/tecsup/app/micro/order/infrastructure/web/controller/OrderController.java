@@ -13,6 +13,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,14 +48,16 @@ public class OrderController {
      * Crea una nueva orden (solo ADMIN)
      */
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("isAuthenticated() and hasAnyRole('RESTAURANT_MANAGER','CLIENT','ADMIN')")
     public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody CreateOrderRequest request,
                                                      @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
-        log.info("REST request to create order: {}", request.getUserId());
         Order order = orderDtoMapper.toDomain(request);
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getPrincipal().toString();
 
-        Order validateOrder = orderApplicationService.validateOrder(order, authorizationHeader);
-        Order createdOrder = orderApplicationService.createOrder(validateOrder);
+        Order validateOrder = orderApplicationService.validateOrder(order, email, authorizationHeader);
+        Order createdOrder = orderApplicationService.createOrder(validateOrder, authorizationHeader);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(orderDtoMapper.toResponse(createdOrder));
     }

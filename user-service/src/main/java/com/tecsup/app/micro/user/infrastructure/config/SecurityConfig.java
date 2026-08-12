@@ -64,6 +64,9 @@ public class SecurityConfig {
 //                        .requestMatchers("/actuator/health/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()    // Permitir todos los actuator
 
+                        // Consulta por email: cualquier usuario autenticado
+                        .requestMatchers("/api/users/email/**").authenticated()
+
                         // Solo ADMIN puede gestionar usuarios
                         .requestMatchers("/api/users/**").hasRole("ADMIN")
 

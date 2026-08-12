@@ -5,17 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductResponse {
+public class RestaurantResponse {
     private Long id;
     private String name;
-    private String unitcode;
-    private BigDecimal price;
-    private RestaurantResponse restaurant;
-    private CategoryResponse category;
+    private String type;
+    private String address;
 }

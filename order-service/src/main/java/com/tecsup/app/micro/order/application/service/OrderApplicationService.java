@@ -36,14 +36,14 @@ public class OrderApplicationService {
     }
 
     @Transactional
-    public Order validateOrder(Order order, String token) {
-        return validateOrderUseCase.validate(order,token);
+    public Order validateOrder(Order order, String email, String token) {
+        return validateOrderUseCase.validate(order,email, token);
     }
 
 
     @Transactional
-    public Order createOrder(Order order) {
-        return createOrderUseCase.execute(order);
+    public Order createOrder(Order order, String token) {
+        return createOrderUseCase.execute(order,token);
     }
 
 }

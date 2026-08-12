@@ -2,6 +2,7 @@ package com.tecsup.app.micro.order.application.usecase;
 
 import com.tecsup.app.micro.order.domain.model.Order;
 import com.tecsup.app.micro.order.domain.model.OrderItem;
+import com.tecsup.app.micro.order.domain.model.Product;
 import com.tecsup.app.micro.order.domain.repository.OrderItemRepository;
 import com.tecsup.app.micro.order.domain.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +23,9 @@ public class CreateOrderUseCase {
     
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
+    private final UpdateProductByIdUseCase updateProductByIdUseCase;
 
-    public Order execute(Order order) {
+    public Order execute(Order order, String token) {
         log.debug("Executing CreateOrderUseCase for product: {}", order.getOrderNumber());
         // Guardar orden
         BigDecimal total = new BigDecimal(0);
@@ -51,9 +53,15 @@ public class CreateOrderUseCase {
             OrderItem itemSaved = orderItemRepository.save(item);
             itemSaved.setProduct(item.getProduct());
             lstItemsSaved.add(itemSaved);
+
+            Product productNew = updateProductByIdUseCase.execute(item.getProduct().getId(),
+                    item.getQuantity(),token.replace("Bearer ",""));
+            if(productNew!=null){
+                log.info("se actualizo el stock del producto");
+            }
         }
         savedOrder.setItems(lstItemsSaved);
-       log.info("Order created successfully with id: {}", savedOrder.getOrderNumber());
+        log.info("Order created successfully with id: {}", savedOrder.getOrderNumber());
         
         return savedOrder;
     }

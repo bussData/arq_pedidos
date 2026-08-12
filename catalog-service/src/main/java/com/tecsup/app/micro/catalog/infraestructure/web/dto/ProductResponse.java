@@ -22,4 +22,5 @@ public class ProductResponse {
     private int stock;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private RestaurantResponse restaurant;
 }

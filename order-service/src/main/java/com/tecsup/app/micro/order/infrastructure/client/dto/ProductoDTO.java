@@ -14,14 +14,15 @@ public class ProductoDTO {
 
     private Long id;
     private String name;
-    private String description;
+    private String unitcode;
     private BigDecimal price;
     private Integer stock;
-    private String category;
+    //private String categoryId;
     private String createdBy;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
-    private String available;
+    private CategoryDTO category;
+    private RestaurantDTO restaurant;
 
     public ProductoDTO(Long id, String name,
                        BigDecimal price, Integer stock) {

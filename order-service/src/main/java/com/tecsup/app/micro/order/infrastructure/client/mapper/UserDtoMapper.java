@@ -14,4 +14,5 @@ public interface UserDtoMapper {
     UserDTO toDomain(UserDTO body);
     UserDTO toDto(User user);
     User toDomain(ResponseEntity<UserDTO> response);
+    User toDomain2(UserDTO userDTO);
 }

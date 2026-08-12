@@ -1,2 +1,7 @@
 /*Sequencia para el nro orden*/
-create SEQUENCE order_number_seq;
+CREATE SEQUENCE seq_orders
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;

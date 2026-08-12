@@ -49,7 +49,6 @@ public class UserController {
         List<User> users = userApplicationService.getAllUsers();
         return ResponseEntity.ok(userDtoMapper.toResponseList(users));
     }
-
     /**
      *
      * Obtiene el usuario autenticado actual
@@ -73,7 +72,7 @@ public class UserController {
      * Obtiene un usuario por ID (solo ADMIN)
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("isAuthenticated() and hasAnyRole('RESTAURANT_MANAGER','CLIENT','ADMIN')")
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
         log.info("REST request to get user by id: {}", id);
         User user = userApplicationService.getUserById(id);
@@ -124,5 +123,13 @@ public class UserController {
     @GetMapping("/health")
     public ResponseEntity<String> health() {
         return ResponseEntity.ok("User Service running with Clean Architecture!");
+    }
+
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<UserResponse> getUserByEmail(@PathVariable String email) {
+        log.info("REST request to get user by email: {}", email);
+        User user = userApplicationService.getUserByEmail(email);
+        return ResponseEntity.ok(userDtoMapper.toResponse(user));
     }
 }

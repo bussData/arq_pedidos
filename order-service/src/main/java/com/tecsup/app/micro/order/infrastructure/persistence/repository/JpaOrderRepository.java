@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface JpaOrderRepository extends JpaRepository<OrderEntity, Long> {
 
-    @Query(value = "SELECT nextval('order_number_seq')", nativeQuery = true)
+    @Query(value = "SELECT nextval('seq_orders')", nativeQuery = true)
     Long getNextOrderId();
 
 }

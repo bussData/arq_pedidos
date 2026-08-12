@@ -2,6 +2,7 @@ package com.tecsup.app.micro.order.infrastructure.client;
 
 import com.tecsup.app.micro.order.domain.model.Product;
 import com.tecsup.app.micro.order.infrastructure.client.dto.ProductoDTO;
+import com.tecsup.app.micro.order.infrastructure.client.dto.UpdateProductRequest;
 import com.tecsup.app.micro.order.infrastructure.client.mapper.ProductoDtoMapper;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
@@ -30,7 +31,7 @@ public class ProductClient {
     public Product getProductById(Long id, String jwtToken){
         log.info("Invocando rest del product-service para validar el producto con jwt");
 
-        String url = this.productoServiceUrl+"/api/products/"+id;
+        String url = this.productoServiceUrl+"/api/catalogs/all/products/"+id;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -63,4 +64,35 @@ public class ProductClient {
         return new Product(id, "Producto no disponible", new BigDecimal(0), 0);
 
     }
+
+    public Product updateProductStockById(Long id, int quantity, String jwtToken){
+        log.info("Invocando rest del product-service para actualizar el stock del producto con jwt");
+
+        String url = this.productoServiceUrl+"/api/catalogs/"+id;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        if (jwtToken != null && !jwtToken.isEmpty()) {
+            headers.setBearerAuth(jwtToken);
+        } else {
+            log.warn("No JWT token provided for Product Service call");
+        }
+
+        UpdateProductRequest body = new UpdateProductRequest(quantity);
+        HttpEntity<UpdateProductRequest> entity = new HttpEntity<>(body,headers);
+
+        try{
+            ResponseEntity<ProductoDTO> response = this.restTemplate.exchange(
+                    url, HttpMethod.PUT, entity, ProductoDTO.class);
+
+            ProductoDTO productoDTO = response.getBody();
+
+            log.info("Producto encontrado con jwt para el id {}",response.getBody().getId());
+            return productoDtoMapper.toDomain(productoDTO);
+        } catch (Exception e) {
+            log.error("Error al obtener el producto {}",e.getMessage());
+            throw new RuntimeException("Error al obtener el producto con jwt "+ e.getMessage());
+        }
+    }
+
 }

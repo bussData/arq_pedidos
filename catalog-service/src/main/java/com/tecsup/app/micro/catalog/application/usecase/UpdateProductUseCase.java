@@ -24,7 +24,10 @@ public class UpdateProductUseCase {
                 .orElseThrow(() -> new RuntimeException("Producto no existe: "+String.valueOf(id)));
 
         // Actualizar campos
-        existingProduct.setStock(productDetails.getStock());
+        int stockActual = existingProduct.getStock();
+        int cantAUsar = productDetails.getStock();
+
+        existingProduct.setStock(stockActual-cantAUsar);
         
         // Guardar cambios
         Product updatedProduct = productRepository.save(existingProduct);

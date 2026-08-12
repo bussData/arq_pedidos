@@ -35,7 +35,7 @@ public class CatalogController {
 
 
     @GetMapping
-    @PreAuthorize("isAuthenticated() and hasRole('RESTAURANT_MANAGER', 'CLIENT','ADMIN')")
+    @PreAuthorize("isAuthenticated() and hasAnyRole('RESTAURANT_MANAGER', 'CLIENT','ADMIN')")
     public ResponseEntity<List<RestaurantResponse>> getAllProducts() {
         log.info("REST request to get all products");
         List<Restaurant> restaurants = catalogApplicationService.getAllProducts();
@@ -76,5 +76,28 @@ public class CatalogController {
         Product product = productDtoMapper.toDomain(request);
         Product updatedProduct = productApplicationService.updateProduct(productId, product);
         return ResponseEntity.ok(productDtoMapper.toResponse(updatedProduct));
+    }
+
+    @GetMapping("/all/products/{productId}")
+    @PreAuthorize("isAuthenticated() and hasAnyRole('RESTAURANT_MANAGER','CLIENT','ADMIN')")
+    public ResponseEntity<ProductResponse> getAllProducts(
+            @PathVariable Long productId,
+            @RequestHeader(value = "Authorization", required = false) String authHeader) {
+
+        // Extraer JWT del header
+        String jwtToken = null;
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            jwtToken = authHeader.substring(7);
+        } else {
+            log.warn("No Authorization header with Bearer token found for product retrieval");
+        }
+
+        log.info("getAllProductsFromRestaurant");
+        Optional <Product> producto = productApplicationService.getProduct(productId,jwtToken);
+
+        return   producto
+                .map(productDtoMapper::toResponse)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

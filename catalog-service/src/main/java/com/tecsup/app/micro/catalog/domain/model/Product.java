@@ -24,4 +24,5 @@ public class Product {
     private LocalDateTime updatedAt;
 
     private Category category;
+    private Restaurant restaurant;
 }

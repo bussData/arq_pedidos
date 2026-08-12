@@ -63,11 +63,12 @@ Desarrollar un microservicio de **Gestión de Órdenes (Order Service)** que se 
 En una arquitectura de microservicios para un sistema de pedidos de comida desde diferentes restaurantes, se requiere implementar el servicio de gestion de pedidos y coordinacion de entregas.
 Los servicios principales son:
 
-1. **Servicios de usuarios** permite registrar datos de cliente y direccion de entrega.
-también gestiona los usuarios de restaurantes que pueden modificar el catalogo de productos del restaurante.
-2. **Servicios de Catálogos** registra y actualiza el catalogo de restaurantes y sus direcciones, el stock de platos disponibles. 
-3. **Servicios de Pedidos** gestiona la creación y seguimiento de pedidos.
-4. **Servicio de Pagos** registra y actualiza los pagos realizados por pedidos y actualiza el estado del pedido a pago verificado o pago anulado.
+1. **Servicios de usuarios** permite generar los tokens y consultar los usuarios y sus roles.
+Para la manipulacion de servicios se manejan los sgtes roles: CLIENT, ADMIN, RESTAURANT_MANAGER, DRIVER
+
+2. **Servicios de Catálogos** consulta y actualiza el catalogo de restaurantes, productos y el stock de platos disponibles. 
+3. **Servicios de Pedidos** gestiona la creación de ordenes en estado PENDING y dispara la actualización de stock de productos.
+4. **Servicio de Pagos** registra y actualiza los pagos realizados y actualiza el estado del pedido a pago verificado o pago anulado.
 5. **Servicios de Entregas** registra la traza del envio y actualiza el estado del pedido a entregado o no se entrego.
 
 ---

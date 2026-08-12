@@ -23,6 +23,7 @@ public class UserApplicationService {
     private final CreateUserUseCase createUserUseCase;
     private final UpdateUserUseCase updateUserUseCase;
     private final DeleteUserUseCase deleteUserUseCase;
+    private final GetUserByEmailUseCase getUserByEmailUseCase;
     
     @Transactional(readOnly = true)
     public List<User> getAllUsers() {
@@ -48,4 +49,10 @@ public class UserApplicationService {
     public void deleteUser(Long id) {
         deleteUserUseCase.execute(id);
     }
+
+    @Transactional(readOnly = true)
+    public User getUserByEmail(String email) {
+        return getUserByEmailUseCase.execute(email);
+    }
+
 }

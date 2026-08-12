@@ -18,10 +18,12 @@ public class Product {
     
     private Long id;
     private String name;
-    private String description;
+    private String unitcode;
     private BigDecimal price;
     private Integer stock;
-    private String category;
+    //private String category;
+    private Category category;
+    private Restaurant restaurant;
     private Long createdBy;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

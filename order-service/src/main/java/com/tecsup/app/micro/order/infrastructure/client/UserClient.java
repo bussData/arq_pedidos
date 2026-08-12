@@ -107,4 +107,29 @@ public class UserClient {
         return new UserDTO(userId, "Usuario no disponible","N/A");
     }
 
+    public User getUserByEmail(String email, String jwtToken) {
+
+        String url = this.userServiceUrl + "/api/users/email/" + email;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        if (jwtToken != null && !jwtToken.isEmpty()) {
+            headers.setBearerAuth(jwtToken);
+        } else {
+            log.warn("No JWT token provided for Product Service call");
+        }
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        try {
+            ResponseEntity<UserDTO> response = this.restTemplate.exchange(
+                    url, HttpMethod.GET, entity, UserDTO.class);
+
+            UserDTO userDTO = response.getBody();
+            log.info("User retrieved successfully from userdb: {}", response.getBody().getId());
+            return userDTOMapper.toDomain2(userDTO);
+        } catch (Exception e) {
+            log.error("Error calling User Service: {}", e.getMessage());
+            throw new RuntimeException("Error calling User Service: " + e.getMessage());
+        }
+    }
 }

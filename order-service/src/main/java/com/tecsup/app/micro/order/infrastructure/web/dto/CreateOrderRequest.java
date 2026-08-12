@@ -19,9 +19,6 @@ import java.util.List;
 @AllArgsConstructor
 public class CreateOrderRequest {
 
-    @NotNull(message = "userId is required")
-    private Long userId;
-
     @Valid
     @NotEmpty(message = "Order must contain at least one item")
     private List<CreateOrderItemRequest> items;

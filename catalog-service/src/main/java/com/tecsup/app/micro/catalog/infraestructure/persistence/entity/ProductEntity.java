@@ -25,7 +25,15 @@ import java.time.LocalDateTime;
 public class ProductEntity {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "products_generator"
+    )
+    @SequenceGenerator(
+            name = "products_generator",
+            sequenceName = "seq_products",
+            allocationSize = 1
+    )
     private Long id;
 
     @Column(name = "restaurant_id", nullable = false)

@@ -23,15 +23,15 @@ public class ProductClient {
     private final RestTemplate restTemplate;
     private final ProductoDtoMapper productoDtoMapper;
 
-    @Value("${product.service.url}")
-    private String productoServiceUrl;
+    @Value("${catalog.service.url}")
+    private String catalogServiceUrl;
 
-    @CircuitBreaker(name = "productService", fallbackMethod = "getProductFallback")
-    @Retry(name = "productService")
+    @CircuitBreaker(name = "orderService", fallbackMethod = "getProductFallback")
+    @Retry(name = "orderService")
     public Product getProductById(Long id, String jwtToken){
         log.info("Invocando rest del product-service para validar el producto con jwt");
 
-        String url = this.productoServiceUrl+"/api/catalogs/all/products/"+id;
+        String url = this.catalogServiceUrl+"/api/catalogs/all/products/"+id;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -68,7 +68,7 @@ public class ProductClient {
     public Product updateProductStockById(Long id, int quantity, String jwtToken){
         log.info("Invocando rest del product-service para actualizar el stock del producto con jwt");
 
-        String url = this.productoServiceUrl+"/api/catalogs/"+id;
+        String url = this.catalogServiceUrl+"/api/catalogs/"+id;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

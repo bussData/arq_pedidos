@@ -35,7 +35,7 @@ public class CatalogController {
 
 
     @GetMapping
-    @PreAuthorize("isAuthenticated() and hasAnyRole('RESTAURANT_MANAGER', 'CLIENT','ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<RestaurantResponse>> getAllProducts() {
         log.info("REST request to get all products");
         List<Restaurant> restaurants = catalogApplicationService.getAllProducts();
@@ -44,7 +44,7 @@ public class CatalogController {
 
 
     @GetMapping("/{restaurantId}")
-    @PreAuthorize("isAuthenticated() and hasAnyRole('RESTAURANT_MANAGER','CLIENT','ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<RestaurantResponse> getAllProductsFromRestaurant(
             @PathVariable Long restaurantId,
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
@@ -68,7 +68,7 @@ public class CatalogController {
     }
 
     @PutMapping("/{productId}")
-    @PreAuthorize("isAuthenticated() and hasAnyRole('RESTAURANT_MANAGER','CLIENT','ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ProductResponse> updateProduct(
             @PathVariable Long productId,
             @Valid @RequestBody UpdateProductRequest request) {
@@ -79,7 +79,7 @@ public class CatalogController {
     }
 
     @GetMapping("/all/products/{productId}")
-    @PreAuthorize("isAuthenticated() and hasAnyRole('RESTAURANT_MANAGER','CLIENT','ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ProductResponse> getAllProducts(
             @PathVariable Long productId,
             @RequestHeader(value = "Authorization", required = false) String authHeader) {

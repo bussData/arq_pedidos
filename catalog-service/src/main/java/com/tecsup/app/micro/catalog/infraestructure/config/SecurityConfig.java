@@ -54,19 +54,17 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
                         // Endpoints públicos (lectura de productos)
-                        .requestMatchers(HttpMethod.GET, "/api/products").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/products/available").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/products/health").permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/api/products/{id}").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/products/{id}").hasRole("ADMIN") //.permitAll() // CAMBIO
+                        .requestMatchers(HttpMethod.GET, "/api/catalog").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/catalog/{restaurantId}").permitAll()
 
 //                        .requestMatchers("/actuator/health/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()    // Permitir todos los actuator
 
-                        // Solo ADMIN puede crear, actualizar, eliminar productos
-                        .requestMatchers(HttpMethod.POST, "/api/products").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/products/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")
+                        .requestMatchers("/api/catalog/all/products/{productId}").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/catalog/{productId}").hasAnyRole("'CLIENT','ADMIN','RESTAURANT_MANAGER'")
+
+                        //.requestMatchers(HttpMethod.PUT, "/api/catalog/**").hasRole("ADMIN")
+                        //.requestMatchers(HttpMethod.DELETE, "/api/catalog/**").hasRole("ADMIN")
 
                         // Todo lo demás requiere autenticación
                         .anyRequest().authenticated()

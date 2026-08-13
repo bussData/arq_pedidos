@@ -10,7 +10,7 @@ curl.exe -H "Authorization: Bearer $TOKEN" http://localhost:8081/api/users
 
 ---
 
-**NOTA: Cómo desplegar:**
+**NOTA: Cómo desplegar cada MS en K8s:**
 
 - Compilar el proyecto (si es necesario):
 
@@ -34,7 +34,7 @@ kubectl -n order-service get pods
 
 - Reiniciar el despliegue para aplicar los cambios (opcional, ya que kubectl apply debería manejarlo)
 
-kubectl rollout restart deployment product-service -n product-service
+kubectl rollout restart deployment order-service -n order-service
 
 ---
 
@@ -47,8 +47,9 @@ kubectl rollout restart deployment product-service -n product-service
 
 
 - kubectl port-forward -n user-service svc/user-service 8081:80
-- kubectl port-forward -n product-service svc/product-service 8082:80
+- kubectl port-forward -n catalog-service svc/catalog-service 8082:80
 - kubectl port-forward -n order-service svc/order-service 8083:80
+- kubectl port-forward -n payment-service svc/payment-service 8084:80
 
 ---
 

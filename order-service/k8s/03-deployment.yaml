@@ -63,6 +63,12 @@ spec:
                   name: order-service-config
                   key: USER_SERVICE_URL
 
+            - name: CATALOG_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: order-service-config
+                  key: CATALOG_SERVICE_URL
+
             - name: DB_URL
               valueFrom:
                 configMapKeyRef:

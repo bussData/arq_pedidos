@@ -45,7 +45,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics
+        include: health,info,metrics,prometheus
   endpoint:
     health:
       probes:
@@ -56,11 +56,34 @@ management:
       enabled: true
     readinessState:
       enabled: true
+  # Métricas Prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  # Trazas distribuidas
+  tracing:
+    sampling:
+      probability: 1.0        # 1.0 = 100% de trazas (solo para desarrollo)
+      # En producción usar 0.1 (10%)
+  # Tags comunes en todas las métricas
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true    # Habilitar histograma de latencia
+
+# Zipkin endpoint
+management.zipkin.tracing:
+  endpoint: ${ZIPKIN_URL:http://localhost:9411/api/v2/spans}
 
 # ============================================
 # LOGGING
 # ============================================
 logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{traceId:-},%X{spanId:-}]"
   level:
     com.tecsup.app.micro.catalog: ${LOG_LEVEL:INFO}
     org.hibernate.SQL: ${SQL_LOG_LEVEL:WARN}
@@ -72,8 +95,11 @@ logging:
 # Formato: http://<service-name>.<namespace>.svc.cluster.local
 user:
   service:
-     url: ${USER_SERVICE_URL:http://user-service.user-service.svc.cluster.local}
+    url: ${USER_SERVICE_URL:http://user-service.user-service.svc.cluster.local}
 
+catalog:
+  service:
+    url: ${CATALOG_SERVICE_URL:http://catalog-service.catalog-service.svc.cluster.local}
 # ============================================
 # JWT CONFIGURATION (Sesión 2)
 # ============================================

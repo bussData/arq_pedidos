@@ -49,6 +49,9 @@ user:
   service:
      url: ${USER_SERVICE_URL:http://localhost:8081}
 
+catalog:
+  service:
+    url: ${CATALOG_SERVICE_URL:http://localhost:8082}
 # ============================================
 # JWT CONFIGURATION (Sesión 2)
 # ============================================

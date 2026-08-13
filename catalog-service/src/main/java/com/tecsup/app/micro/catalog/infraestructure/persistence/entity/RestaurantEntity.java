@@ -19,7 +19,15 @@ import lombok.NoArgsConstructor;
 public class RestaurantEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "restaurants_generator"
+    )
+    @SequenceGenerator(
+            name = "restaurants_generator",
+            sequenceName = "seq_restaurants",
+            allocationSize = 1
+    )
     private Long id;
 
     @Column(nullable = false, length = 200)

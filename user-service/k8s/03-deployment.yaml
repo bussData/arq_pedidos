@@ -40,7 +40,7 @@ spec:
           # imagePullPolicy:
           # - Never: Solo usar imagen local (desarrollo)
           # - Always: Siempre descargar (producción)
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent
 
           # Puerto del contenedor
           ports:

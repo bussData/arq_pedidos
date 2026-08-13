@@ -65,10 +65,10 @@ public class SecurityConfig {
                         .requestMatchers("/actuator/**").permitAll()    // Permitir todos los actuator
 
                         // Consulta por email: cualquier usuario autenticado
-                        .requestMatchers("/api/users/email/**").authenticated()
+                        .requestMatchers("/api/users/email/{email}").authenticated()
 
                         // Solo ADMIN puede gestionar usuarios
-                        .requestMatchers("/api/users/**").hasRole("ADMIN")
+                        //.requestMatchers("/api/users/**").hasRole("ADMIN")
 
                         // Todo lo demás requiere autenticación
                         .anyRequest().authenticated()

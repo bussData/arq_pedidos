@@ -16,8 +16,17 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderItemEntity {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "order_items_generator"
+    )
+    @SequenceGenerator(
+            name = "order_items_generator",
+            sequenceName = "seq_order_items",
+            allocationSize = 1
+    )
     private Long id;
 
     @Column(name = "order_id", nullable = false)

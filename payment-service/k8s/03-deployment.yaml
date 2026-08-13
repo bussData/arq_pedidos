@@ -4,10 +4,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: catalog-service
-  namespace: catalog-service
+  name: payment-service
+  namespace: payment-service
   labels:
-    app: catalog-service
+    app: payment-service
 
 spec:
   # ========================================
@@ -20,7 +20,7 @@ spec:
   # ========================================
   selector:
     matchLabels:
-      app: catalog-service
+      app: payment-service
 
   # ========================================
   # Template: Cómo crear cada pod
@@ -28,14 +28,14 @@ spec:
   template:
     metadata:
       labels:
-        app: catalog-service
+        app: payment-service
 
     spec:
       containers:
-        - name: catalog-service
+        - name: payment-service
 
           # Imagen Docker
-          image: catalog-service:1.0
+          image: payment-service:1.0
 
           # imagePullPolicy:
           # - Never: Solo usar imagen local (desarrollo)
@@ -45,7 +45,7 @@ spec:
 
           # Puerto del contenedor
           ports:
-            - containerPort: 8082
+            - containerPort: 8084
               name: http
 
           # ====================================
@@ -60,37 +60,31 @@ spec:
             - name: USER_SERVICE_URL
               valueFrom:
                 configMapKeyRef:
-                  name: catalog-service-config
+                  name: payment-service-config
                   key: USER_SERVICE_URL
-
-            - name: CATALOG_SERVICE_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: catalog-service-config
-                  key: CATALOG_SERVICE_URL
 
             - name: DB_URL
               valueFrom:
                 configMapKeyRef:
-                  name: catalog-service-config
+                  name: payment-service-config
                   key: DB_URL
 
             - name: DDL_AUTO
               valueFrom:
                 configMapKeyRef:
-                  name: catalog-service-config
+                  name: payment-service-config
                   key: DDL_AUTO
 
             - name: LOG_LEVEL
               valueFrom:
                 configMapKeyRef:
-                  name: catalog-service-config
+                  name: payment-service-config
                   key: LOG_LEVEL
 
             - name: JAVA_OPTS
               valueFrom:
                 configMapKeyRef:
-                  name: catalog-service-config
+                  name: payment-service-config
                   key: JAVA_OPTS
 
             # Desde Secret
@@ -98,11 +92,11 @@ spec:
             - name: DB_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: catalog-service-secret
+                  name: payment-service-secret
                   key: DB_USERNAME
 
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: catalog-service-secret
+                  name: payment-service-secret
                   key: DB_PASSWORD

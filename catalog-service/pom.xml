@@ -81,6 +81,10 @@
 			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
 
+		<!-- ============================================ -->
+		<!-- NUEVO - Módulo 5 Sesión 1: Observabilidad    -->
+		<!-- ============================================ -->
+
 		<!--metricas-->
 		<!-- Micrometer → Prometheus (métricas) -->
 		<dependency>
@@ -135,6 +139,11 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<!-- Spring Boot Actuator (para health checks de Kubernetes) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

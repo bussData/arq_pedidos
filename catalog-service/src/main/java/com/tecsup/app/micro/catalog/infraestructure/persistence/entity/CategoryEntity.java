@@ -15,7 +15,15 @@ import lombok.NoArgsConstructor;
 public class CategoryEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "categories_generator"
+    )
+    @SequenceGenerator(
+            name = "categories_generator",
+            sequenceName = "seq_categories",
+            allocationSize = 1
+    )
     private Long id;
 
     @Column(nullable = false, length = 255)

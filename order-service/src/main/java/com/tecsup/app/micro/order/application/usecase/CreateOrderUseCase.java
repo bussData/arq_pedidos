@@ -5,10 +5,12 @@ import com.tecsup.app.micro.order.domain.model.OrderItem;
 import com.tecsup.app.micro.order.domain.model.Product;
 import com.tecsup.app.micro.order.domain.repository.OrderItemRepository;
 import com.tecsup.app.micro.order.domain.repository.OrderRepository;
+import com.tecsup.app.micro.order.shared.infraestructure.event.KafkaEventPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import com.tecsup.app.micro.events.OrderCreatedEvent;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
@@ -24,6 +26,8 @@ public class CreateOrderUseCase {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
     private final UpdateProductByIdUseCase updateProductByIdUseCase;
+
+    private final KafkaEventPublisher eventPublisher;
 
     public Order execute(Order order, String token) {
         log.debug("Executing CreateOrderUseCase for product: {}", order.getOrderNumber());
@@ -62,7 +66,13 @@ public class CreateOrderUseCase {
         }
         savedOrder.setItems(lstItemsSaved);
         log.info("Order created successfully with id: {}", savedOrder.getOrderNumber());
-        
+
+        //Crea el evento Kafka
+        OrderCreatedEvent event =
+                new OrderCreatedEvent(savedOrder.getId().toString(),savedOrder.getUserId().toString(),
+                        savedOrder.getStatus() );
+        this.eventPublisher.publish(event);
+
         return savedOrder;
     }
 }

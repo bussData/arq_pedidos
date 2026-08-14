@@ -34,7 +34,7 @@ public class OrderEntity {
     )
     @SequenceGenerator(
             name = "order_generator",
-            sequenceName = "seq_order",
+            sequenceName = "seq_orders",
             allocationSize = 1
     )
     private Long id;

@@ -7,9 +7,9 @@ CREATE TABLE deliveries (
     id         BIGSERIAL NOT NULL,
     order_id   BIGSERIAL NOT NULL,
     status     VARCHAR(50) NOT NULL,
-    trace_code BIGSERIAL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    trace_code VARCHAR(255)  ,
+    created_at TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT pk_deliveries
         PRIMARY KEY (id)

@@ -1,0 +1,449 @@
+{
+  "info": {
+    "_postman_id": "8775b138-4aeb-4ae0-9309-ec05bed00024",
+    "name": "pruebas Sistema Pedidos",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "1842278"
+  },
+  "item": [
+    {
+      "name": "http://localhost:8081/api/users",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{json_web_token_08tm}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8081/api/users",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "api",
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "1. LOGGING",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\":\"maria.garcia@example.com\",\r\n\"password\":\"user123\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8081/api/auth/login",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2.  GET ALL RESTAURANTS",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1JFU1RBVVJBTlRfTUFOQUdFUiJdLCJzdWIiOiJjYXJsb3MubG9wZXpAZXhhbXBsZS5jb20iLCJpYXQiOjE3ODY1MDE4MzEsImV4cCI6MTc4NjUwNTQzMX0.HDUIZlYRm-Dbi8pwDsoyvUjS0p0kn0Jm2qLRIJg9RxM",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8082/api/catalogs",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8082",
+          "path": [
+            "api",
+            "catalogs"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "3. GET ALL PRODUCTS BY RESTAURANT ID",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1JFU1RBVVJBTlRfTUFOQUdFUiJdLCJzdWIiOiJjYXJsb3MubG9wZXpAZXhhbXBsZS5jb20iLCJpYXQiOjE3ODY1MDE4MzEsImV4cCI6MTc4NjUwNTQzMX0.HDUIZlYRm-Dbi8pwDsoyvUjS0p0kn0Jm2qLRIJg9RxM",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8082/api/catalogs/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8082",
+          "path": [
+            "api",
+            "catalogs",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "4. PUT STOCK PRODUCTO",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1JFU1RBVVJBTlRfTUFOQUdFUiJdLCJzdWIiOiJjYXJsb3MubG9wZXpAZXhhbXBsZS5jb20iLCJpYXQiOjE3ODY1MDM2NzEsImV4cCI6MTc4NjUwNzI3MX0.dE46uaYf6xBVsWhP-VXCcVLUrn7m2N0gOwwz4JD9UKM",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"stock\":1\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8082/api/catalogs/5",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8082",
+          "path": [
+            "api",
+            "catalogs",
+            "5"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "5. GET PRODUCT BY ID",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{auth_secret_0jm3}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8082/api/catalogs/all/products/6",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8082",
+          "path": [
+            "api",
+            "catalogs",
+            "all",
+            "products",
+            "6"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "6. GET USER BY EMAIL",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{json_web_token_07vz}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8081/api/users/email/maria.garcia@example.com",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "api",
+            "users",
+            "email",
+            "maria.garcia@example.com"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "7. POST ORDER",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX0NMSUVOVCJdLCJzdWIiOiJtYXJpYS5nYXJjaWFAZXhhbXBsZS5jb20iLCJpYXQiOjE3ODY1MTgxNDIsImV4cCI6MTc4NjUyMTc0Mn0.9JcJHzGjH_4WRBD9HKU1zjmJ4cDdaNZdfc2JPMINkoI",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{ \r\n    \"items\":[{\r\n        \"productId\":\"6\",\r\n        \"quantity\":1\r\n    },{\r\n        \"productId\":\"12\",\r\n        \"quantity\":2\r\n    }]\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8083/api/orders",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8083",
+          "path": [
+            "api",
+            "orders"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "8. POST PAYMENT DE LA ORDER",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{json_web_token_0tht}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"orderId\":\"45\",\r\n  \"amount\":24\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8084/api/payments",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8084",
+          "path": [
+            "api",
+            "payments"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:8081/actuator/health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8081/actuator/health",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "actuator",
+            "health"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:8082/api/products",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{supabase_service_role_api_key_1740}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"boligrafos\",\r\n\"description\": \"lapiceros de punta redonda\",\r\n\"price\":2.50,\r\n\"stock\":22,\r\n\"category\": \"utiles\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8082/api/products",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8082",
+          "path": [
+            "api",
+            "products"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:8082/api/products/id",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{supabase_service_role_api_key_1740}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"boligrafos\",\r\n\"description\": \"lapiceros de punta redonda\",\r\n\"price\":2.50,\r\n\"stock\":22,\r\n\"category\": \"utiles\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8082/api/products",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8082",
+          "path": [
+            "api",
+            "products"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "json_web_token_08tm",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_1740",
+      "secret": true
+    },
+    {
+      "key": "auth_secret_05wi",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0aid",
+      "secret": true
+    },
+    {
+      "key": "auth_secret_07tj",
+      "secret": true
+    },
+    {
+      "key": "auth_secret_0jm3",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_07vz",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0tht",
+      "secret": true
+    }
+  ]
+}

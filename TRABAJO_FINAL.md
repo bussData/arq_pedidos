@@ -1,61 +1,10 @@
 # 📄 TRABAJO: ORDER SERVICE (KUBERNETES)
+ 
 
-**Módulo:** 5 
-
----
-
-curl.exe -s -X POST http://localhost:8081/api/auth/login  -H "Content-Type: application/json" -d '{"email":"juan.perez@example.com","password":"admin123"}'
-
-curl.exe -H "Authorization: Bearer $TOKEN" http://localhost:8081/api/users
-
----
-
-**NOTA: Cómo desplegar cada MS en K8s:**
-
-- Compilar el proyecto (si es necesario):
-
-mvn clean package -DskipTests
-
-- Construir imagen Docker:
-
-docker build -t order-service:1.0 .
-
-- Configurar Contexto para Docker Desktop
-
-kubectl config use-context docker-desktop
-
-- Actualizar el Secret con las nuevas variables de entorno codificadas en base64 (en la ruta order-service)
-
-kubectl apply -f k8s\
-
-- Cotejar que pods se han desplegado:
-
-kubectl -n order-service get pods
-
-- Reiniciar el despliegue para aplicar los cambios (opcional, ya que kubectl apply debería manejarlo)
-
-kubectl rollout restart deployment order-service -n order-service
-
----
-
-**NOTA: Cómo ejecutar peticiones:**
-- Se actualizó el Docker Desktop a una version que solo usa KIND o KUBEADMIN para K8s.
-- Se utilizó KIND que tiene mapeo por nodos internamente y no es visible las imagenes en el docker desktop directamente, por ello se agregó el "imagePullPolicy: IfNotPresent".
-- La otra opción para este comando de port-forward es el mapeo de un ingress.yaml y la instalación de un nginx.
-
-- Ejecutar los sgtes comandos, cada uno en una terminal, no cerrar el terminal para poder ejecutar las invocaciones:
-
-
-- kubectl port-forward -n user-service svc/user-service 8081:80
-- kubectl port-forward -n catalog-service svc/catalog-service 8082:80
-- kubectl port-forward -n order-service svc/order-service 8083:80
-- kubectl port-forward -n payment-service svc/payment-service 8084:80
-
----
 
 ## 🎯 OBJETIVO
 
-Desarrollar un microservicio de **Gestión de Órdenes (Order Service)** que se integre con el microservicio **Product Service** y se despliegue localmente en Kubernete.
+Desarrollar un sistema de gestión de pedidos para múltiples restaurantes, basado en microservicios.
 
 ---
 
@@ -79,7 +28,7 @@ Para la manipulacion de servicios se manejan los sgtes roles: CLIENT, ADMIN, RES
 ### Arquitectura Completa
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│               ARQUITECTURA COMPLETA            │
+│               ARQUITECTURA COMPLETA                         │
 └─────────────────────────────────────────────────────────────┘
 
      ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐
@@ -143,181 +92,303 @@ Respuesta 201 Created
 ## 📊 MODELO DE DATOS
 
 ### Diagrama Entidad-Relación
-```
-┌─────────────────────────────┐
-│            ORDERS           │
-├─────────────────────────────┤
-│ PK  id                      │
-│     order_number (UNIQUE)   │
-│     user_id                 │
-│     status                  │
-│     total_amount            │
-│     created_at              │
-│     updated_at              │
-└─────────────┬───────────────┘
-              │ 1      
-              │         
-              │                         
-              │ N                        
-              ▼                        
-┌─────────────────────────────┐
-│        ORDER_ITEMS          │
-├─────────────────────────────┤
-│ PK  id                      │
-│ FK  order_id                │
-│     product_id              │
-│     quantity                │
-│     unit_price              │
-│     subtotal                │
-└─────────────────────────────┘
-                               
-     product_id    ────────────────────┐
-                                       │
-        user_id    ──────────┐         │
-                             │         │
-                             ▼         ▼
-                    User Service   Product Service
-                      (userdb)      (productdb)
-```
 
-### Tabla: orders
 
-| Campo | Tipo | Restricciones | Descripción |
-|-------|------|---------------|-------------|
-| `id` | BIGSERIAL | PRIMARY KEY | ID único de la orden |
-| `order_number` | VARCHAR(50) | UNIQUE, NOT NULL | Número de orden (ej: ORD-2025-001) |
-| `user_id` | BIGINT | NOT NULL | ID del usuario (ref. externa) |
-| `status` | VARCHAR(20) | NOT NULL, DEFAULT 'PENDING' | Estado de la orden |
-| `total_amount` | NUMERIC(10,2) | NOT NULL, >= 0 | Monto total |
-| `created_at` | TIMESTAMP | NOT NULL, DEFAULT NOW() | Fecha de creación |
-| `updated_at` | TIMESTAMP | NOT NULL, DEFAULT NOW() | Fecha de actualización |
+<img src="observability/images/modeloBDPedidos.png" />
+  
 
-**Estados válidos:** `PENDING`, `CONFIRMED`, `SHIPPED`, `DELIVERED`, `CANCELLED`
-
-### Tabla: order_items
-
-| Campo | Tipo | Restricciones | Descripción |
-|-------|------|---------------|-------------|
-| `id` | BIGSERIAL | PRIMARY KEY | ID único del item |
-| `order_id` | BIGINT | NOT NULL, FK → orders(id) CASCADE | ID de la orden |
-| `product_id` | BIGINT | NOT NULL | ID del producto (ref. externa) |
-| `quantity` | INTEGER | NOT NULL, > 0 | Cantidad |
-| `unit_price` | NUMERIC(10,2) | NOT NULL, >= 0 | Precio unitario |
-| `subtotal` | NUMERIC(10,2) | NOT NULL, >= 0 | Subtotal (qty × price) |
 
 ### Script SQL
 ```sql
--- Tabla de órdenes
-CREATE TABLE orders (
-    id BIGSERIAL PRIMARY KEY,
-    order_number VARCHAR(50) NOT NULL UNIQUE,
-    user_id BIGINT NOT NULL,
-    status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
-    total_amount NUMERIC(10, 2) NOT NULL DEFAULT 0.00,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    
-    CONSTRAINT chk_status CHECK (status IN ('PENDING', 'CONFIRMED', 'SHIPPED', 'DELIVERED', 'CANCELLED')),
-    CONSTRAINT chk_total_positive CHECK (total_amount >= 0)
-);
+Se localizan los scripts en cada microservice en la ruta /database
+Se está considerando data inicial para:
+- users
+- roles
+- user-roles
+- products
+- categories
+- restaurants
 
-CREATE INDEX idx_orders_user_id ON orders(user_id);
-CREATE INDEX idx_orders_status ON orders(status);
-CREATE INDEX idx_orders_created_at ON orders(created_at);
-
--- Tabla de items
-CREATE TABLE order_items (
-    id BIGSERIAL PRIMARY KEY,
-    order_id BIGINT NOT NULL,
-    product_id BIGINT NOT NULL,
-    quantity INTEGER NOT NULL,
-    unit_price NUMERIC(10, 2) NOT NULL,
-    subtotal NUMERIC(10, 2) NOT NULL,
-    
-    CONSTRAINT fk_order FOREIGN KEY (order_id) 
-        REFERENCES orders(id) ON DELETE CASCADE,
-    CONSTRAINT chk_quantity_positive CHECK (quantity > 0),
-    CONSTRAINT chk_unit_price_positive CHECK (unit_price >= 0),
-    CONSTRAINT chk_subtotal_positive CHECK (subtotal >= 0)
-);
-
-CREATE INDEX idx_order_items_order_id ON order_items(order_id);
-CREATE INDEX idx_order_items_product_id ON order_items(product_id);
-
--- Datos de prueba
-INSERT INTO orders (order_number, user_id, status, total_amount) VALUES
-('ORD-2025-001', 1, 'CONFIRMED', 2849.97),
-('ORD-2025-002', 2, 'PENDING', 1199.98),
-('ORD-2025-003', 1, 'SHIPPED', 149.99);
-
-INSERT INTO order_items (order_id, product_id, quantity, unit_price, subtotal) VALUES
-(1, 1, 1, 1299.99, 1299.99),
-(1, 2, 1, 999.99, 999.99),
-(1, 3, 1, 399.99, 399.99),
-(2, 4, 1, 799.99, 799.99),
-(2, 5, 1, 399.00, 399.00),
-(3, 7, 1, 149.99, 149.99);
+Asimismo los ms utilizan sequencias de postgress como parte de sus ids generados. 
 ```
 
 ---
 
 ## 🎯 REQUERIMIENTOS FUNCIONALES
 
+### Endpoints Disponibles
+Se ha colocado el archivo POSTMAN de las peticiones en la ruta /postman
+
+<img src="observability/images/inventarioUris.png" />
+
+
 ### RF-01: Crear Orden de Compra
+- Para pasar una orden de compra es necesario ejecutar el **Endpoint 1. LOGGING**
+- Con el token generado de un usuario cliente, proceder al registro de la orden en el **Endpoint 7. POST ORDER**
 
-**Endpoint:** `POST /api/orders`
+```json
+ADMIN:
+{"email":"juan.perez@example.com",
+"password":"admin123"}
 
-**Request:**
+CLIENT:
+{"email":"maria.garcia@example.com",
+"password":"user123"}
+{"email":"roberto.sanchez@example.com",
+"password":"user123"}
+
+ROLE_RESTAURANT_MANAGER:
+{"email":"carlos.lopez@example.com",
+"password":"admin123"}
+{"email":"ana.torres@example.com",
+"password":"admin123"}
+
+DRIVER:
+{"email":"julio.paredes@example.com",
+"password":"user123"}
+{"email":"luis.ruiz@example.com",
+"password":"user123"}
+
+```
+
+**Request de la orden:**
+para que el cliente realice el pedido solo debe indicar la lista de productos y la cantidad, el sistema tomará su nro de user al correr la validación con su token de sesión y consultar los usuarios asociados a su correo de token.
 ```json
 {
-  "userId": 1,
-  "items": [
-    {
-      "productId": 1,
-      "quantity": 2
-    },
-    {
-      "productId": 3,
-      "quantity": 1
-    }
-  ]
+   "items":[{
+      "productId":"1",
+      "quantity":2
+   },{
+      "productId":"2",
+      "quantity":1
+   }]
 }
 ```
 
 **Response (201 Created):**
 ```json
 {
-  "id": 1,
-  "orderNumber": "ORD-2025-001",
-  "userId": 1,
-  "items": [
-    {
-      "id": 1,
-      "product": {
-        "id": 1,
-        "name": "Laptop Dell XPS 15",
-        "price": 1299.99
+   "id": 60,
+   "orderNumber": "ORD-2026-59",
+   "userId": 5,
+   "items": [
+      {
+         "id": 1,
+         "product": {
+            "id": 1,
+            "name": "Vaso Agua de Jamaica",
+            "unitcode": "ONZ",
+            "price": 12.00,
+            "restaurant": {
+               "id": 1,
+               "name": "El Bigotes",
+               "type": "Mexican food",
+               "address": "Jr los Alamos 312, callao"
+            },
+            "category": {
+               "id": 1,
+               "name": "Beverages"
+            }
+         },
+         "quantity": 2,
+         "unitPrice": 12.00,
+         "subtotal": 24.00
       },
-      "quantity": 2,
-      "unitPrice": 1299.99,
-      "subtotal": 2599.98
-    }
-  ],
-  "totalAmount": 2999.97,
-  "status": "PENDING",
-  "createdAt": "2025-01-20T10:30:00",
+      {
+         "id": 2,
+         "product": {
+            "id": 3,
+            "name": "Enchilada de pollo",
+            "unitcode": "UND",
+            "price": 38.00,
+            "restaurant": {
+               "id": 1,
+               "name": "El Bigotes",
+               "type": "Mexican food",
+               "address": "Jr los Alamos 312, callao"
+            },
+            "category": {
+               "id": 2,
+               "name": "Main dish"
+            }
+         },
+         "quantity": 2,
+         "unitPrice": 38.00,
+         "subtotal": 76.00
+      }
+   ],
+   "status": "PENDING",
+   "totalAmount": 100.00,
+   "createdAt": "2026-08-13T14:51:19.9024146"
 }
 ```
 
-**Proceso:**
+**Proceso del sistema:**
+
+**Registro Orden:**
 1. Para cada item:
-   - Validar producto en Product Service
+   - Validar producto mediante REST al Catalog-Service
+     (este proceso usa un circuit breaker si el producto no se encuentra)
    - Obtener precio actual
    - Calcular subtotal
 2. Calcular total de la orden
 3. Generar número de orden único
-4. Guardar en BD
+4. Guardar en BD y actualizar stock en tabla products
 5. Retornar orden completa
+6. Inscribir el evento en order.events kafka
+
+### RF-02: Realizar Pago de la Orden
+- Para pagar una orden de compra es necesario el token generado en el **Endpoint 1. LOGGING**
+- Con el token generado de un usuario cliente, proceder al registro del pago con el **Endpoint 8. POST PAYMENT DE LA ORDER**
+
+
+**Request del pago:**
+para que el cliente realice el pago del pedido, sólo indicara su orden y monto.
+```json
+{
+  "orderId":"60",
+  "amount":100
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "id": "1",
+  "orderId": 60,
+  "amount": 100,
+  "status": "REJECTED",
+  "transactionId": null,
+  "paidAt": "2026-08-13T15:09:56.9480947"
+}
+```
+
+**Proceso del sistema:**
+
+**Registro del pago:**
+1. Después de ejecutar **Endpoint 8. POST PAYMENT DE LA ORDER** registrar el evento en Kafka payment.events si fue exitoso o rechazado
+2. El pago tiene un random para fallar o ser exitoso
+3. Si el pago fue exitoso, generar un transaction_id y registrarlo en payments y payment_transactions.
+4. Si el pago falló, se registra y actualiza el estado de  REJECTED y su detalle en payments y payment_transactions.
+5. Actualizar el estado de la orden a CONFIRMED o CANCELED, respecto al resultado del payment mediante el consumo del evento kafka "payment.events".
+---
+
+## * MONITOREO 
+
+KAFKA:
+http://localhost:8090/
+<img src="observability/images/kafka_1.png" />
+<img src="observability/images/kafka_2.png" />
+
+
+--levantar observabilidad
+docker compose -f docker-compose-observability.yml up -d
+
+--verificar contenedores
+docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+
+GRAFANA:
+http://localhost:3000/dashboards
+Dashboard de todos los ms:
+<img src="observability/images/grafana_1.png" />
+Dashboard Spring Boot Stadistics (por Ms)
+<img src="observability/images/grafana_2.png" />
+
+PROMETHEUS:
+http://localhost:9090
+```json
+# Query 1: Total de requests por servicio
+http_server_requests_seconds_count
+
+# Query 2: Tasa de requests por segundo
+rate(http_server_requests_seconds_count[1m])
+
+# Query 3: Latencia p95 de cada endpoint
+histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket[5m])) by (le, uri, application))
+
+# Query 4: Conexiones de base de datos activas
+hikaricp_connections_active
+
+# Query 5: Memoria JVM usada (%)
+jvm_memory_used_bytes{area="heap"} / jvm_memory_max_bytes{area="heap"} * 100
+
+# Query 6: Errores 5xx
+sum(rate(http_server_requests_seconds_count{status=~"5.."}[5m])) by (application)
+```
+
+<img src="observability/images/prometheus_1.png" />
+<img src="observability/images/prometheus_2.png" />
+
+ZIPKIN:
+http://localhost:9411/zipkin
+<img src="observability/images/zipkin_1.png" />
+---
+## * DESPLIEGUE
+
+**NOTA: Cómo desplegar cada MS en K8s:**
+
+- Compilar el proyecto (si es necesario):
+
+mvn clean package -DskipTests
+
+- Construir imagen Docker:
+
+docker build -t order-service:1.0 .
+
+- Configurar Contexto para Docker Desktop
+
+kubectl config use-context docker-desktop
+
+- Actualizar el Secret con las nuevas variables de entorno codificadas en base64 (en la ruta order-service)
+
+kubectl apply -f k8s\
+
+- Cotejar que pods se han desplegado:
+
+kubectl -n order-service get pods
+
+- Reiniciar el despliegue para aplicar los cambios (opcional, ya que kubectl apply debería manejarlo)
+
+kubectl rollout restart deployment order-service -n order-service
 
 ---
 
+**NOTA: Cómo ejecutar peticiones:**
+- Se actualizó el Docker Desktop a una version que solo usa KIND o KUBEADMIN para K8s.
+- Se utilizó KIND que tiene mapeo por nodos internamente y no es visible las imagenes en el docker desktop directamente, por ello se agregó el "imagePullPolicy: IfNotPresent".
+- La otra opción para este comando de port-forward es el mapeo de un ingress.yaml y la instalación de un nginx.
+
+- Ejecutar los sgtes comandos, cada uno en una terminal, no cerrar el terminal para poder ejecutar las invocaciones:
+
+
+- kubectl port-forward -n user-service svc/user-service 8081:80
+- kubectl port-forward -n catalog-service svc/catalog-service 8082:80
+- kubectl port-forward -n order-service svc/order-service 8083:80
+- kubectl port-forward -n payment-service svc/payment-service 8084:80
+
+---
+## * TROUBLESHOOTING:
+
+**Problemas de Memoria y CPUS:**
+
+- Usando la version docker-desktop kind, 10 nodes, v1.34.8
+Se amplia la configuracion WSL2 base desde powershell para un equipo de 16Gb hasta en 10 CPUS: 
+
+notepad $env:USERPROFILE\.wslconfig
+
+```json
+  [wsl2]
+  memory=10GB # Limits VM memory in WSL 2 to 4GB
+  processors=10 # Limits the number of processors to 2
+```
+**Problemas de PullImage en k8s:**
+
+- Para los problemas de image Pull al desplegar, considerar que Kind requiere cambiar el parametro de carga de imagen en el 03-deployment.yaml al valor "IfNotPresent":
+
+
+```json
+          # imagePullPolicy:
+          # - Never: Solo usar imagen local (desarrollo)
+          # - Always: Siempre descargar (producción)
+          imagePullPolicy: IfNotPresent
+```

@@ -48,7 +48,7 @@ public class PaymentEventHandler {
     public void handleOrderUpdateStatusRejected(PaymentRejectedEvent  event)
     {
 
-        updateOrderStatusUseCase.updateOrderStatus(String.valueOf(event.getOrderId()),"CANCELLED");
+        updateOrderStatusUseCase.updateOrderStatus(String.valueOf(event.getOrderId()),"CANCELED");
         log.info("[Kafka] PAGO de matricula rechazado: {}", event);
 
     }

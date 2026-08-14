@@ -271,6 +271,7 @@ para que el cliente realice el pago del pedido, sólo indicara su orden y monto.
 3. Si el pago fue exitoso, generar un transaction_id y registrarlo en payments y payment_transactions.
 4. Si el pago falló, se registra y actualiza el estado de  REJECTED y su detalle en payments y payment_transactions.
 5. Actualizar el estado de la orden a CONFIRMED o CANCELED, respecto al resultado del payment mediante el consumo del evento kafka "payment.events".
+6. Si el pago fue exitoso, se consume el evento de kafka y registra la tabla deliveries asi como su evento "delivery.events" para posteriores manejos de flujos.
 ---
 
 ## * MONITOREO 

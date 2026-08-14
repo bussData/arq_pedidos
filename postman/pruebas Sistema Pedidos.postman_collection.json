@@ -14,7 +14,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "{{json_web_token_08tm}}",
+              "value": "{{supabase_service_role_api_key_16kz}}",
               "type": "string"
             }
           ]
@@ -46,7 +46,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\"email\":\"maria.garcia@example.com\",\r\n\"password\":\"user123\"}",
+          "raw": "\r\n{\"email\":\"roberto.sanchez@example.com\",\r\n\"password\":\"user123\"}",
           "options": {
             "raw": {
               "language": "json"
@@ -77,7 +77,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1JFU1RBVVJBTlRfTUFOQUdFUiJdLCJzdWIiOiJjYXJsb3MubG9wZXpAZXhhbXBsZS5jb20iLCJpYXQiOjE3ODY1MDE4MzEsImV4cCI6MTc4NjUwNTQzMX0.HDUIZlYRm-Dbi8pwDsoyvUjS0p0kn0Jm2qLRIJg9RxM",
+              "value": "{{auth_secret_10ie}}",
               "type": "string"
             }
           ]
@@ -107,7 +107,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1JFU1RBVVJBTlRfTUFOQUdFUiJdLCJzdWIiOiJjYXJsb3MubG9wZXpAZXhhbXBsZS5jb20iLCJpYXQiOjE3ODY1MDE4MzEsImV4cCI6MTc4NjUwNTQzMX0.HDUIZlYRm-Dbi8pwDsoyvUjS0p0kn0Jm2qLRIJg9RxM",
+              "value": "{{supabase_service_role_api_key_10ie}}",
               "type": "string"
             }
           ]
@@ -178,7 +178,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "{{auth_secret_0jm3}}",
+              "value": "{{supabase_service_role_api_key_13v4}}",
               "type": "string"
             }
           ]
@@ -186,7 +186,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8082/api/catalogs/all/products/6",
+          "raw": "http://localhost:8082/api/catalogs/all/products/1",
           "protocol": "http",
           "host": [
             "localhost"
@@ -197,7 +197,7 @@
             "catalogs",
             "all",
             "products",
-            "6"
+            "1"
           ]
         }
       },
@@ -243,7 +243,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX0NMSUVOVCJdLCJzdWIiOiJtYXJpYS5nYXJjaWFAZXhhbXBsZS5jb20iLCJpYXQiOjE3ODY1MTgxNDIsImV4cCI6MTc4NjUyMTc0Mn0.9JcJHzGjH_4WRBD9HKU1zjmJ4cDdaNZdfc2JPMINkoI",
+              "value": "{{supabase_service_role_api_key_0hwo}}",
               "type": "string"
             }
           ]
@@ -252,7 +252,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{ \r\n    \"items\":[{\r\n        \"productId\":\"6\",\r\n        \"quantity\":1\r\n    },{\r\n        \"productId\":\"12\",\r\n        \"quantity\":2\r\n    }]\r\n}",
+          "raw": "{ \r\n    \"items\":[{\r\n        \"productId\":\"12\",\r\n        \"quantity\":2\r\n    },{\r\n        \"productId\":\"1\",\r\n        \"quantity\":2\r\n    }]\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -282,7 +282,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "{{json_web_token_0tht}}",
+              "value": "{{json_web_token_0app}}",
               "type": "string"
             }
           ]
@@ -291,7 +291,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n  \"orderId\":\"45\",\r\n  \"amount\":24\r\n}",
+          "raw": "{\r\n  \"orderId\":\"70\",\r\n  \"amount\":100\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -443,6 +443,30 @@
     },
     {
       "key": "json_web_token_0tht",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0app",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_16kz",
+      "secret": true
+    },
+    {
+      "key": "auth_secret_10ie",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_10ie",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_13v4",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_0hwo",
       "secret": true
     }
   ]
